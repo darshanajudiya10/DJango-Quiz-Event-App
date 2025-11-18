@@ -1,0 +1,56 @@
+{% extends "quizzes/base.html" %}
+
+{% block title %}Result | {{ submission.quiz.title }}{% endblock %}
+
+{% block content %}
+  <div class="mx-auto max-w-3xl">
+    <div class="rounded-2xl bg-white p-6 shadow">
+      <p class="text-sm uppercase tracking-wide text-indigo-600">Quiz result</p>
+      <h1 class="mt-2 text-3xl font-bold text-slate-900">{{ submission.quiz.title }}</h1>
+      <p class="mt-2 text-slate-600">Great job, {{ submission.user_name }}!</p>
+
+      <div class="mt-6 grid gap-4 md:grid-cols-3">
+        <div class="rounded-xl border border-slate-200 p-4 text-center">
+          <p class="text-sm text-slate-500">Score</p>
+          <p class="text-3xl font-semibold text-indigo-600">{{ submission.score }}</p>
+        </div>
+        <div class="rounded-xl border border-slate-200 p-4 text-center">
+          <p class="text-sm text-slate-500">Total Questions</p>
+          <p class="text-3xl font-semibold text-slate-900">{{ total_questions }}</p>
+        </div>
+        <div class="rounded-xl border border-slate-200 p-4 text-center">
+          <p class="text-sm text-slate-500">Submitted</p>
+          <p class="text-lg font-semibold text-slate-900">{{ submission.submitted_at|date:"M d, Y H:i" }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6 rounded-2xl bg-white p-6 shadow">
+      <h2 class="text-xl font-semibold text-slate-900">Your Answers</h2>
+      <div class="mt-4 space-y-4">
+        {% for user_answer in submission.answers.all %}
+          <div class="rounded-xl border border-slate-200 p-4">
+            <p class="text-sm text-slate-500">Question</p>
+            <p class="text-lg font-medium text-slate-900">{{ user_answer.question.text }}</p>
+            <p class="mt-2 text-sm text-slate-500">Your answer</p>
+            <div class="mt-1 flex items-center justify-between">
+              <span>{{ user_answer.answer.text }}</span>
+              {% if user_answer.is_correct %}
+                <span class="rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700">Correct</span>
+              {% else %}
+                <span class="rounded-full bg-red-100 px-3 py-1 text-sm font-semibold text-red-700">Incorrect</span>
+              {% endif %}
+            </div>
+          </div>
+        {% empty %}
+          <p class="text-slate-500">No answers were recorded for this submission.</p>
+        {% endfor %}
+      </div>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="{% url 'quizzes:quiz_list' %}" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:border-indigo-400">Try another quiz</a>
+        <a href="{% url 'quizzes:home' %}" class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">Back to home</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+

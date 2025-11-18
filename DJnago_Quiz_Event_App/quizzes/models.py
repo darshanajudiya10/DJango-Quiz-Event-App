@@ -1,6 +1,6 @@
 from django.db import models
 
-
+#model for Quiz
 class Quiz(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
@@ -10,7 +10,7 @@ class Quiz(models.Model):
     def __str__(self):
         return self.title
 
-
+#model for Question
 class Question(models.Model):
     MULTIPLE_CHOICE = 'multiple_choice'
     SINGLE_CHOICE = 'single_choice'
@@ -30,7 +30,7 @@ class Question(models.Model):
     def __str__(self):
         return f'{self.quiz.title}: {self.text[:50]}'
 
-
+#model for Answer
 class Answer(models.Model):
     question = models.ForeignKey(Question, related_name='answers', on_delete=models.CASCADE)
     text = models.TextField()
@@ -39,7 +39,7 @@ class Answer(models.Model):
     def __str__(self):
         return f'{self.question.text[:30]} - {self.text[:30]}'
 
-
+#model for UserSubmission
 class UserSubmission(models.Model):
     quiz = models.ForeignKey(Quiz, related_name='submissions', on_delete=models.CASCADE)
     user_name = models.CharField(max_length=150)
@@ -49,7 +49,7 @@ class UserSubmission(models.Model):
     def __str__(self):
         return f'{self.user_name} - {self.quiz.title}'
 
-
+#model for UserAnswer
 class UserAnswer(models.Model):
     submission = models.ForeignKey(
         UserSubmission, related_name='answers', on_delete=models.CASCADE
@@ -69,7 +69,7 @@ class UserAnswer(models.Model):
     def __str__(self):
         return f'{self.submission.user_name} - {self.question.text[:30]}'
 
-
+#model for Event
 class Event(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)

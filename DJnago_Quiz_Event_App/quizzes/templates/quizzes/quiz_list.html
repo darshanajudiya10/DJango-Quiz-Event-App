@@ -1,0 +1,27 @@
+{% extends "quizzes/base.html" %}
+
+{% block title %}Quizzes | Quiz & Event App{% endblock %}
+
+{% block content %}
+  <div class="mb-8 text-center">
+    <p class="text-sm uppercase tracking-wide text-indigo-600">Choose a quiz</p>
+    <h1 class="text-3xl font-bold">Available Quizzes</h1>
+    <p class="mt-2 text-slate-600">Pick a quiz and start answering questions in seconds.</p>
+  </div>
+
+  <div class="grid gap-6 md:grid-cols-2">
+    {% for quiz in quizzes %}
+      <div class="rounded-2xl bg-white p-6 shadow">
+        <h2 class="text-xl font-semibold text-slate-900">{{ quiz.title }}</h2>
+        <p class="mt-2 text-slate-600">{{ quiz.description|default:"No description provided." }}</p>
+        <div class="mt-4 flex items-center justify-between text-sm text-slate-500">
+          <span>{{ quiz.questions.count }} questions</span>
+          <a href="{% url 'quizzes:quiz_attempt' quiz.id %}" class="text-indigo-600 font-medium">Start →</a>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-slate-600">No quizzes are available right now. Please check back later.</p>
+    {% endfor %}
+  </div>
+{% endblock %}
+

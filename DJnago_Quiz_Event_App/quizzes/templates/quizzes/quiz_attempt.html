@@ -1,0 +1,145 @@
+{% extends "quizzes/base.html" %}
+
+{% block title %}Attempt {{ quiz.title }} | Quiz & Event App{% endblock %}
+
+{% block content %}
+  <div class="mx-auto max-w-3xl">
+    <a href="{% url 'quizzes:quiz_list' %}" class="text-sm text-slate-500 hover:text-indigo-600">← Back to quizzes</a>
+    <div class="mt-4 rounded-2xl bg-white p-6 shadow">
+      <p class="text-sm uppercase tracking-wide text-indigo-600">Quiz attempt</p>
+      <h1 class="text-3xl font-bold text-slate-900">{{ quiz.title }}</h1>
+      <p class="mt-2 text-slate-600">{{ quiz.description }}</p>
+    </div>
+
+    <form id="quiz-form" class="mt-6 space-y-4 rounded-2xl bg-white p-6 shadow">
+      <div>
+        <label for="user_name" class="block text-sm font-medium text-slate-700">Your name</label>
+        <input
+          type="text"
+          id="user_name"
+          name="user_name"
+          class="mt-2 w-full rounded-lg border border-slate-200 px-3 py-2 focus:border-indigo-500 focus:outline-none"
+          placeholder="Enter your name"
+          required
+        />
+      </div>
+      <div id="questions-wrapper" class="space-y-6"></div>
+      <button
+        type="submit"
+        class="w-full rounded-lg bg-indigo-600 py-3 text-white font-semibold hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+      >
+        Submit Quiz
+      </button>
+      <p id="form-error" class="hidden text-sm text-red-600"></p>
+    </form>
+  </div>
+
+  <script>
+    const quizId = {{ quiz.id }};
+    const quizDataUrl = "{% url 'quizzes:quiz_data' quiz.id %}";
+    const submitUrl = "{% url 'quizzes:submit_quiz' quiz.id %}";
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === name + "=") {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    function renderQuestions(questions) {
+      const wrapper = document.getElementById("questions-wrapper");
+      if (!questions.length) {
+        wrapper.innerHTML = '<p class="text-sm text-slate-500">No questions available for this quiz.</p>';
+        document.querySelector("#quiz-form button").disabled = true;
+        return;
+      }
+
+      const html = questions
+        .map((question, index) => {
+          const answers = question.answers
+            .map(
+              (answer) => `
+                <label class="flex items-center space-x-3 rounded-lg border border-slate-200 px-4 py-2 hover:border-indigo-400">
+                  <input type="radio" name="question_${question.id}" value="${answer.id}" class="h-4 w-4" required />
+                  <span>${answer.text}</span>
+                </label>
+              `
+            )
+            .join("");
+
+          return `
+            <div class="rounded-xl border border-slate-200 p-4">
+              <p class="text-sm text-slate-500">Question ${index + 1}</p>
+              <h3 class="mt-1 text-lg font-semibold text-slate-900">${question.text}</h3>
+              <div class="mt-4 space-y-2">
+                ${answers}
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+
+      wrapper.innerHTML = html;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      fetch(quizDataUrl)
+        .then((response) => response.json())
+        .then((data) => renderQuestions(data.questions))
+        .catch(() => {
+          document.getElementById("form-error").textContent = "Unable to load questions. Please refresh the page.";
+          document.getElementById("form-error").classList.remove("hidden");
+        });
+
+      document.getElementById("quiz-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const errorElement = document.getElementById("form-error");
+        errorElement.classList.add("hidden");
+
+        const formData = new FormData(event.target);
+        const answers = {};
+
+        for (const [key, value] of formData.entries()) {
+          if (key.startsWith("question_")) {
+            const questionId = key.split("_")[1];
+            answers[questionId] = value;
+          }
+        }
+
+        fetch(submitUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          body: JSON.stringify({
+            user_name: formData.get("user_name"),
+            answers,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.redirect_url) {
+              window.location.href = data.redirect_url;
+            } else if (data.error) {
+              errorElement.textContent = data.error;
+              errorElement.classList.remove("hidden");
+            }
+          })
+          .catch(() => {
+            errorElement.textContent = "Something went wrong. Please try again.";
+            errorElement.classList.remove("hidden");
+          });
+      });
+    });
+  </script>
+{% endblock %}
+
