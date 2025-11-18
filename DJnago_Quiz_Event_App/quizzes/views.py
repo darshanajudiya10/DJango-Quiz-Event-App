@@ -1,5 +1,6 @@
 import json
 
+from django.contrib import messages
 from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
@@ -134,3 +135,8 @@ def quiz_result(request, submission_id):
 def event_list(request):
     events = Event.objects.filter(date__gte=timezone.now().date()).order_by('date')
     return render(request, 'quizzes/events.html', {'events': events})
+
+
+def quiz_history(request):
+    submissions = UserSubmission.objects.select_related('quiz').order_by('-submitted_at')
+    return render(request, 'quizzes/quiz_history.html', {'submissions': submissions})

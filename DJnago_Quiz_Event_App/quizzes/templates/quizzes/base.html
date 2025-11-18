@@ -16,10 +16,20 @@
           <a href="{% url 'quizzes:home' %}" class="hover:text-indigo-600">Home</a>
           <a href="{% url 'quizzes:quiz_list' %}" class="hover:text-indigo-600">Quizzes</a>
           <a href="{% url 'quizzes:event_list' %}" class="hover:text-indigo-600">Events</a>
+          <a href="{% url 'quizzes:quiz_history' %}" class="hover:text-indigo-600">History</a>
         </nav>
       </div>
     </header>
     <main class="mx-auto max-w-6xl px-4 py-8">
+      {% if messages %}
+        <div class="mb-4">
+          {% for message in messages %}
+            <div class="rounded-lg px-4 py-3 text-sm {% if message.tags == 'error' %}bg-red-100 text-red-700{% elif message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
       {% block content %}{% endblock %}
     </main>
     <footer class="bg-white py-6 text-center text-sm text-slate-500">

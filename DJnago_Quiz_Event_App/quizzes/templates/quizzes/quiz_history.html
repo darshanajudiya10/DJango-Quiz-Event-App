@@ -1,0 +1,95 @@
+{% extends "quizzes/base.html" %}
+
+{% block title %}Quiz History | Quiz & Event App{% endblock %}
+
+{% block content %}
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-slate-900">Quiz History</h1>
+    <p class="mt-2 text-slate-600">View all quiz submissions and results</p>
+  </div>
+
+  {% if submissions %}
+    <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+      <table class="w-full">
+        <thead class="bg-slate-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+              User
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+              Quiz
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+              Score
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+              Submitted
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          {% for submission in submissions %}
+            <tr class="hover:bg-slate-50">
+              <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-slate-900">
+                {{ submission.user_name }}
+              </td>
+              <td class="px-6 py-4 text-sm text-slate-600">{{ submission.quiz.title }}</td>
+              <td class="px-6 py-4 text-sm">
+                {% with total=submission.quiz.questions.count score=submission.score %}
+                  {% if total > 0 %}
+                    {% if score == total %}
+                      <span class="inline-flex rounded-full px-2 py-1 text-xs font-semibold bg-green-100 text-green-800">
+                        {{ score }} / {{ total }}
+                      </span>
+                    {% elif score >= total|add:"-1" %}
+                      <span class="inline-flex rounded-full px-2 py-1 text-xs font-semibold bg-green-100 text-green-800">
+                        {{ score }} / {{ total }}
+                      </span>
+                    {% elif score >= total|add:"-2" %}
+                      <span class="inline-flex rounded-full px-2 py-1 text-xs font-semibold bg-yellow-100 text-yellow-800">
+                        {{ score }} / {{ total }}
+                      </span>
+                    {% else %}
+                      <span class="inline-flex rounded-full px-2 py-1 text-xs font-semibold bg-red-100 text-red-800">
+                        {{ score }} / {{ total }}
+                      </span>
+                    {% endif %}
+                  {% else %}
+                    <span class="inline-flex rounded-full px-2 py-1 text-xs font-semibold bg-slate-100 text-slate-800">
+                      {{ score }} / {{ total }}
+                    </span>
+                  {% endif %}
+                {% endwith %}
+              </td>
+              <td class="whitespace-nowrap px-6 py-4 text-sm text-slate-500">
+                {{ submission.submitted_at|date:"M d, Y H:i" }}
+              </td>
+              <td class="whitespace-nowrap px-6 py-4 text-sm">
+                <a
+                  href="{% url 'quizzes:quiz_result' submission.id %}"
+                  class="text-indigo-600 hover:text-indigo-900"
+                >
+                  View Details
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="rounded-xl border border-slate-200 bg-white p-12 text-center">
+      <p class="text-slate-500">No quiz submissions yet.</p>
+      <a
+        href="{% url 'quizzes:quiz_list' %}"
+        class="mt-4 inline-block rounded-lg bg-indigo-600 px-4 py-2 text-white font-semibold hover:bg-indigo-700"
+      >
+        Take a Quiz
+      </a>
+    </div>
+  {% endif %}
+{% endblock %}
+
