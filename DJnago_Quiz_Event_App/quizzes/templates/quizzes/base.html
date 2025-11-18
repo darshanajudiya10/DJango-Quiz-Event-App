@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Quiz & Event App{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-screen bg-slate-50 text-slate-900">
+    <header class="bg-white shadow">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+        <a href="{% url 'quizzes:home' %}" class="text-xl font-semibold text-indigo-600">
+          Quiz & Events
+        </a>
+        <nav class="space-x-4 text-sm font-medium text-slate-600">
+          <a href="{% url 'quizzes:home' %}" class="hover:text-indigo-600">Home</a>
+          <a href="{% url 'quizzes:quiz_list' %}" class="hover:text-indigo-600">Quizzes</a>
+          <a href="{% url 'quizzes:event_list' %}" class="hover:text-indigo-600">Events</a>
+        </nav>
+      </div>
+    </header>
+    <main class="mx-auto max-w-6xl px-4 py-8">
+      {% block content %}{% endblock %}
+    </main>
+    <footer class="bg-white py-6 text-center text-sm text-slate-500">
+      Built with Django & TailwindCSS
+    </footer>
+  </body>
+</html>
+
