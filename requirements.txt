@@ -1,0 +1,14 @@
+# Django Quiz & Event App Requirements
+# Python 3.8 or higher required
+
+# Core Framework
+Django>=5.2,<6.0
+
+# Database (SQLite is included with Python, but you can add these for other databases)
+# psycopg2-binary>=2.9.0  # For PostgreSQL
+# mysqlclient>=2.1.0      # For MySQL/MariaDB
+
+# Optional: For production deployment
+# gunicorn>=21.0.0        # WSGI HTTP Server
+# whitenoise>=6.0.0       # Static file serving
+# python-decouple>=3.8    # Environment variable management
