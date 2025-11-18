@@ -1,0 +1,32 @@
+{% extends "quizzes/base.html" %}
+
+{% block title %}Events | Quiz & Event App{% endblock %}
+
+{% block content %}
+  <div class="mb-8 text-center">
+    <p class="text-sm uppercase tracking-wide text-indigo-600">Stay informed</p>
+    <h1 class="text-3xl font-bold">Upcoming Events</h1>
+    <p class="mt-2 text-slate-600">Track future happenings with location and schedule.</p>
+  </div>
+
+  <div class="space-y-4">
+    {% for event in events %}
+      <div class="rounded-2xl bg-white p-6 shadow">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-semibold text-slate-900">{{ event.title }}</h2>
+            <p class="mt-2 text-slate-600">{{ event.description|default:"No description provided." }}</p>
+          </div>
+          <div class="text-right">
+            <p class="text-sm font-medium text-slate-500">Date</p>
+            <p class="text-lg font-semibold text-indigo-600">{{ event.date }}</p>
+            <p class="mt-1 text-sm text-slate-500">{{ event.location }}</p>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-slate-600">No upcoming events at the moment.</p>
+    {% endfor %}
+  </div>
+{% endblock %}
+
