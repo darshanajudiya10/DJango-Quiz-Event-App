@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+from django.contrib.auth.models import User as AuthUser
 
 #model for Quiz
 class Quiz(models.Model):
@@ -6,7 +8,7 @@ class Quiz(models.Model):
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    
     def __str__(self):
         return self.title
 
@@ -78,3 +80,17 @@ class Event(models.Model):
 
     def __str__(self):
         return self.title
+    
+    
+class User(models.Model):
+        email = models.EmailField(unique=True)
+        phone = models.CharField(max_length=10)
+        name = models.CharField(max_length=255)
+        description = models.TextField(blank=False)
+        event_recurrence = models.CharField(max_length=255, blank=False)
+        image = models.ImageField(upload_to='images/', blank=False, null=False)
+        
+        def __str__(self):
+            return self.name
+    
+    

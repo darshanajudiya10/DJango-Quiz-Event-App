@@ -23,6 +23,8 @@ def home(request):
         },
     )
 
+def user_profile(request):
+    return render(request, 'quizzes/user_profile.html')
 
 def quiz_list(request):
     quizzes = Quiz.objects.order_by('-created_at')

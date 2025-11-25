@@ -1,0 +1,35 @@
+{% extends "quizzes/base.html" %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block content %}
+<form action="POST">
+    <div>
+        <label for="username" >Username</label>
+        <input type="text" name="username" id="username"   >
+        <br>
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email"   >
+        <br>
+        <label for="phone">Phone</label>
+        <input type="num" name="phone" id="phone"   >
+        <br>
+        <label for="description">Description</label>
+        <input type="text" name="description" id="description"  >
+        <br>
+        <label for="event_recurrence">event_recurrence</label>
+        <input type="num" name="event_recurrence" id="event_recurrence"   >
+        <br>
+        <label for="image">image</label>
+        <input type="file" name="image" id="image"   >
+        <br>
+        <button
+        type="submit"
+        class="w-full rounded-lg bg-indigo-600 py-3 text-white font-semibold hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+      >
+        Submit
+      </button>
+
+    </div>
+</form>  
+{% endblock %}
